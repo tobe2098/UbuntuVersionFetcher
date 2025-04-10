@@ -26,9 +26,10 @@ class UbuntuCloudInterface {
 };
 
 class UbuntuCloudFetcher : public UbuntuCloudInterface {
-    std::string _url;
-    bool        _initialized;
-    json        _productData;
+    const std::string _url;
+    bool              _initialized;
+    json              _productData;
+    CURL*             _curl_handle;
 
   public:
     // Changing the url (only if input with --url?)
@@ -49,5 +50,5 @@ class UbuntuCloudFetcher : public UbuntuCloudInterface {
     // Fetch data
     bool fetchData() override;
 
-  private:
+    static size_t writeData(void* buffer_ptr, size_t size, size_t nmemb, void* data_ptr);
 };
