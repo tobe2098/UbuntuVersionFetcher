@@ -9,15 +9,15 @@ UbuntuCloudFetcher::~UbuntuCloudFetcher() { }
 std::vector<std::string> UbuntuCloudFetcher::getSupportedReleases() const {
   std::set<std::string> unique_versions;  // Assume only unique version names are wanted in said list
 
-  for (const auto& [product_name, product_values] : this->_productData.items()) {
+  for (const auto& [product_name, product_json] : this->_productData.items()) {
     // Iterate over each product entry
-    if (product_values.find("supported") != product_values.end() && product_values.at("supported") == "true") {
+    if (product_json.find("supported") != product_json.end() && product_json.at("supported") == true) {
       // If the version is supported, we include its name in the set
-      std::string complete_name = "Ubuntu" + product_values.at("release_title").template get<std::string>() + " (" +
-                                  product_values.at("release_name").template get<std::string>() +
-                                  ") : " + product_values.at("arch").template get<std::string>();
+      std::string complete_name = "Ubuntu" + product_json.at("release_title").template get<std::string>() + " (" +
+                                  product_json.at("release").template get<std::string>() +
+                                  ") : " + product_json.at("arch").template get<std::string>();
       unique_versions.insert(complete_name);
-      // unique_versions.insert(product_values["release_title"]);
+      // unique_versions.insert(product_json["release_title"]);
     }
   }
   // Maybe sort versions?
@@ -70,16 +70,13 @@ bool UbuntuCloudFetcher::curlRequest(CURL* curl_handle, std::string& curl_respon
   }
   // After curl handle initialization, we do the request
   try {
-    // json data = json::parse(
-    //   "{\"content_id\": \"com.ubuntu.cloud:released:download\",\"creator\": \"climdb-download-streams-export\",\"datatype\": "
-    //   "\"image-downloads\",\"format\": \"products:1.0\"\n}");
     json data = json::parse(curl_response);
     if (!data.contains("products")) {
       // Problem with data content
       std::cerr << "Data not found on curl request" << std::endl;
       return false;  // Early return
     }
-    this->_productData = data["products"];
+    this->_productData = data.at("products");
     this->_initialized = true;
   } catch (const json::parse_error& exception) {
     std::cerr << "JSON parsing error" << exception.what() << std::endl;
