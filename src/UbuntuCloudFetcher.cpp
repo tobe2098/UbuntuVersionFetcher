@@ -6,23 +6,23 @@ UbuntuCloudFetcher::UbuntuCloudFetcher(const std::string& url): _url(url), _init
 
 UbuntuCloudFetcher::~UbuntuCloudFetcher() { }
 
-std::vector<std::string> UbuntuCloudFetcher::getSupportedReleases() const {
-  std::set<std::string> unique_versions;  // Assume only unique version names are wanted in said list
+std::vector<std::pair<std::string, std::vector<std::string>>> UbuntuCloudFetcher::getSupportedReleases() const {
+  std::map<std::string, std::vector<std::string>, std::greater<>> unique_versions;
+  // Assume only unique version names are wanted in said list
 
   for (const auto& [product_name, product_json] : this->_productData.items()) {
     // Iterate over each product entry
     if (product_json.find("supported") != product_json.end() && product_json.at("supported") == true) {
       // If the version is supported, we include its name in the set
-      std::string complete_name = "Ubuntu" + product_json.at("release_title").template get<std::string>() + " (" +
-                                  product_json.at("release").template get<std::string>() +
-                                  ") : " + product_json.at("arch").template get<std::string>();
-      unique_versions.insert(complete_name);
-      // unique_versions.insert(product_json["release_title"]);
+      std::string complete_name = "Ubuntu " + product_json.at("release_title").template get<std::string>() + " (" +
+                                  product_json.at("release").template get<std::string>() + ")";
+      unique_versions[complete_name].push_back(product_json.at("arch").template get<std::string>());
     }
+    // unique_versions.insert(product_json["release_title"]);
   }
   // Maybe sort versions?
   //  Check the "supported" boolean in the json
-  return std::vector<std::string>(unique_versions.begin(), unique_versions.end());
+  return std::vector<std::pair<std::string, std::vector<std::string>>>(unique_versions.begin(), unique_versions.end());
 }
 
 std::string UbuntuCloudFetcher::getCurrentLTS() const {

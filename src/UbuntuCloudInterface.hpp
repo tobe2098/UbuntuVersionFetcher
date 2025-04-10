@@ -13,7 +13,7 @@ class UbuntuCloudInterface {
     virtual ~UbuntuCloudInterface() = default;
 
     // Return a list of all currently supported Ubuntu releases
-    virtual std::vector<std::string> getSupportedReleases() const = 0;
+    virtual std::vector<std::pair<std::string, std::vector<std::string>>> getSupportedReleases() const = 0;
 
     // Return the current Ubuntu LTS version
     virtual std::string getCurrentLTS() const = 0;

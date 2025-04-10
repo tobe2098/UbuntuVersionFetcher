@@ -2,6 +2,8 @@
 #include <iostream>
 #include "UbuntuCloudFactory.hpp"
 
+constexpr int base_indentation { 1 };
+
 void printHelp() {
   std::cout << "Usage: ubuntu-version-fetcher [OPTION]\n"
             << "Options:\n"
@@ -10,6 +12,10 @@ void printHelp() {
             << "  --sha256 RELEASE         Get the SHA256 hash of disk1.img for the specified release\n"
             // << "  --url URL           Use custom Simplestreams URL\n"
             << "  --help                   Display this help and exit\n";
+}
+
+std::string indentation(int indentation_level) {
+  return std::string(2 * (indentation_level + base_indentation), ' ');
 }
 
 int main(int argc, char* argv[]) {
@@ -33,10 +39,22 @@ int main(int argc, char* argv[]) {
   }
   int return_code { 0 };
   if (option == "--supported-releases") {
-    std::vector<std::string> releases { fetcher->getSupportedReleases() };
-    std::cout << "Supported Ubuntu releases: \n";
-    for (std::string_view release : releases) {
-      std::cout << release << '\n';
+    std::vector<std::pair<std::string, std::vector<std::string>>> releases { fetcher->getSupportedReleases() };
+
+    bool LTS { false };
+    std::cout << '\n';
+    std::cout << indentation(0) << "Supported Ubuntu releases:\n";
+    std::cout << indentation(1) << "Non-LTS:\n";
+    for (const auto& [release_name, archs] : releases) {
+      if (!LTS && release_name.find("LTS") != std::string::npos) {
+        LTS = true;
+        std::cout << indentation(1) << "LTS:\n";
+      }
+      std::cout << indentation(2) << release_name << " : ";
+      for (const std::string& arch : archs) {
+        std::cout << arch << " ";
+      }
+      std::cout << "\n";
     }
   } else if (option == "--help") {
     printHelp();
@@ -52,5 +70,6 @@ int main(int argc, char* argv[]) {
   //   4- Return the sha256 of the disk1.img of a given Ubuntu release (string match)
 
   curl_global_cleanup();
+  std::cout << "\n";
   return return_code;
 }
