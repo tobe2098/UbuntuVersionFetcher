@@ -26,10 +26,9 @@ class UbuntuCloudInterface {
 };
 
 class UbuntuCloudFetcher : public UbuntuCloudInterface {
-    const std::string _url;
-    bool              _initialized;
-    json              _productData;
-    CURL*             _curl_handle;
+    const std::string _url;          // The used URL for curl request
+    bool              _initialized;  // Wether the instance has initialized json data
+    json              _productData;  // Received data from curl request in json format
 
   public:
     // Changing the url (only if input with --url?)
