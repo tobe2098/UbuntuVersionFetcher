@@ -1,6 +1,6 @@
 #include "UbuntuCloudFetcher.hpp"
 
-UbuntuCloudFetcher::UbuntuCloudFetcher(const std::string& url) { }
+UbuntuCloudFetcher::UbuntuCloudFetcher(const std::string& url): _url(url), _initialized(false) { }
 
 UbuntuCloudFetcher::~UbuntuCloudFetcher() { }
 
