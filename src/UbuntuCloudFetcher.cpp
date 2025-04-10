@@ -7,6 +7,7 @@ UbuntuCloudFetcher::UbuntuCloudFetcher(const std::string& url): _url(url), _init
 UbuntuCloudFetcher::~UbuntuCloudFetcher() { }
 
 std::vector<std::string> UbuntuCloudFetcher::getSupportedReleases() const {
+  std::cout << "Hello";
   std::set<std::string> unique_versions;  // Assume only unique version names are wanted in said list
 
   for (const auto& [product_name, product_values] : this->_productData.items()) {

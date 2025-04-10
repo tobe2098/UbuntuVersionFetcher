@@ -31,3 +31,8 @@
 *.out
 *.app
 .vscode/settings.json
+*.ninja
+.ninja_deps
+.ninja_log
+CMakeCache.txt
+/CMakeFiles
