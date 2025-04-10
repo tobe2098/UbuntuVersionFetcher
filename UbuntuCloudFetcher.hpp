@@ -2,10 +2,12 @@
 
 #include <curl/curl.h>
 #include <nlohmann/json.hpp>
+
+#include <iostream>
 #include <optional>
+#include <set>
 #include <string>
 #include <vector>
-
 using json = nlohmann::json;
 
 class UbuntuCloudInterface {
@@ -23,12 +25,18 @@ class UbuntuCloudInterface {
 };
 
 class UbuntuCloudFetcher : public UbuntuCloudInterface {
+    // For clarity
+
+  private:
+    //
     const std::string _url;          // The used URL for curl request
     bool              _initialized;  // Wether the instance has initialized json data
     json              _productData;  // Received data from curl request in json format
 
+    bool curlRequest(CURL* curl_handle, std::string& curl_response);
+
   public:
-    // Changing the url (only if input with --url?)
+    //
     UbuntuCloudFetcher(const std::string& url);
 
     ~UbuntuCloudFetcher();
@@ -44,7 +52,6 @@ class UbuntuCloudFetcher : public UbuntuCloudInterface {
 
     // Fetch data
     bool fetchData();
-
     // Process data
     // void processData(); //Not necessary because we only do one request per process
 
