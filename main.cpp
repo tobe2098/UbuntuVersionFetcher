@@ -1,9 +1,13 @@
 
 
-#include "UbuntuCloudFetcher.hpp"
+#include "UbuntuCloudFactory.hpp"
+
+typedef std::unique_ptr<UbuntuCloudInterface> UCI_Ptr;
 
 int main(int argc, char* argv[]) {
   curl_global_init(CURL_GLOBAL_DEFAULT);
+
+  UCI_Ptr fetcher = UbuntuCloudFactory::createFetcher();
   // Include options:
   //   1- Changing the url (only if input with --url?)
   //   2- Return the list of all currently *supported* Ubuntu releases
