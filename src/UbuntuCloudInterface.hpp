@@ -20,4 +20,6 @@ class UbuntuCloudInterface {
 
     // Return the sha256 of the disk1.img item of a given Ubuntu release
     virtual std::optional<std::string> getSha256ForRelease(const std::string& release) const = 0;
+
+    virtual bool isInitialized() const = 0;
 };

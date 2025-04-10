@@ -7,7 +7,6 @@ UbuntuCloudFetcher::UbuntuCloudFetcher(const std::string& url): _url(url), _init
 UbuntuCloudFetcher::~UbuntuCloudFetcher() { }
 
 std::vector<std::string> UbuntuCloudFetcher::getSupportedReleases() const {
-  std::cout << "Hello";
   std::set<std::string> unique_versions;  // Assume only unique version names are wanted in said list
 
   for (const auto& [product_name, product_values] : this->_productData.items()) {
@@ -39,7 +38,7 @@ std::optional<std::string> UbuntuCloudFetcher::getSha256ForRelease(const std::st
 bool UbuntuCloudFetcher::fetchData() {
   // Initialize the handle
   CURL*       curl_handle;
-  std::string curl_response;
+  std::string curl_response {};
 
   curl_handle = curl_easy_init();
   if (!curl_handle) {
@@ -47,12 +46,12 @@ bool UbuntuCloudFetcher::fetchData() {
     return false;  // Early return without clean-up required
   }
   // Set curl options: url, writing function with set signature, data pointer for said function and timeout.
-  curl_easy_setopt(curl_handle, CURLOPT_URL, this->_url);
+  curl_easy_setopt(curl_handle, CURLOPT_URL, this->_url.data());
   curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, this->writeData);
-  curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, &curl_response);
+  curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, &(curl_response));
   curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 30L);
+  curl_easy_setopt(curl_handle, CURLOPT_FOLLOWLOCATION, 1L);
 
-  // After curl handle initialization, we do the request
   bool result { curlRequest(curl_handle, curl_response) };
 
   // Clean-up functions whatever result the request has
@@ -62,14 +61,18 @@ bool UbuntuCloudFetcher::fetchData() {
 
 bool UbuntuCloudFetcher::curlRequest(CURL* curl_handle, std::string& curl_response) {
   CURLcode result_code = curl_easy_perform(curl_handle);
-
+  // std::cout << curl_response;
   if (result_code != CURLE_OK) {
     // Curl request failed, clean-up functions
     std::cerr << "curl error: " << curl_easy_strerror(result_code) << std::endl;
     // Force flush to ensure output is clear
     return false;  // Early return
   }
+  // After curl handle initialization, we do the request
   try {
+    // json data = json::parse(
+    //   "{\"content_id\": \"com.ubuntu.cloud:released:download\",\"creator\": \"climdb-download-streams-export\",\"datatype\": "
+    //   "\"image-downloads\",\"format\": \"products:1.0\"\n}");
     json data = json::parse(curl_response);
     if (!data.contains("products")) {
       // Problem with data content
@@ -88,6 +91,6 @@ bool UbuntuCloudFetcher::curlRequest(CURL* curl_handle, std::string& curl_respon
 
 size_t UbuntuCloudFetcher::writeData(void* buffer_ptr, size_t size, size_t nmemb, void* data_ptr) {
   std::string* string_ptr { static_cast<std::string*>(data_ptr) };
-  string_ptr->assign((char*)buffer_ptr, size * nmemb);
-  return string_ptr->size();
+  string_ptr->append((char*)buffer_ptr, size * nmemb);
+  return size * nmemb;
 }

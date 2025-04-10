@@ -28,6 +28,7 @@ class UbuntuCloudFetcher : public UbuntuCloudInterface {
 
     ~UbuntuCloudFetcher();
 
+    bool isInitialized() const override { return _initialized; }
     // Return the list of all currently *supported* Ubuntu releases
     std::vector<std::string> getSupportedReleases() const override;
 

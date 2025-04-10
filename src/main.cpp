@@ -5,18 +5,18 @@
 void printHelp() {
   std::cout << "Usage: ubuntu-version-fetcher [OPTION]\n"
             << "Options:\n"
-            << "  --list-releases     List all supported Ubuntu releases\n"
-            << "  --current-lts       Show the current Ubuntu LTS version\n"
-            << "  --sha256 RELEASE    Get the SHA256 hash of disk1.img for the specified release\n"
+            << "  --supported-releases     List all supported Ubuntu releases\n"
+            << "  --current-lts            Show the current Ubuntu LTS version\n"
+            << "  --sha256 RELEASE         Get the SHA256 hash of disk1.img for the specified release\n"
             // << "  --url URL           Use custom Simplestreams URL\n"
-            << "  --help              Display this help and exit\n";
+            << "  --help                   Display this help and exit\n";
 }
 
 int main(int argc, char* argv[]) {
   std::ios_base::sync_with_stdio(false);
-
   if (argc < 2) {
     printHelp();
+    return 0;
   }
 
   curl_global_init(CURL_GLOBAL_DEFAULT);
@@ -27,8 +27,12 @@ int main(int argc, char* argv[]) {
     std::cerr << "Failed to create cloud fetcher instance." << std::endl;
     return 1;
   }
+  if (!fetcher->isInitialized()) {
+    std::cerr << "Data could not be fetched." << std::endl;
+    return 1;
+  }
   int return_code { 0 };
-  if (option == "--list-releases") {
+  if (option == "--supported-releases") {
     std::vector<std::string> releases { fetcher->getSupportedReleases() };
     std::cout << "Supported Ubuntu releases: \n";
     for (std::string_view release : releases) {
