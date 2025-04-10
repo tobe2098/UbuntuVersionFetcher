@@ -1,8 +1,12 @@
 #pragma once
 
+#include <curl/curl.h>
+#include <nlohmann/json.hpp>
 #include <optional>
 #include <string>
 #include <vector>
+
+using json = nlohmann::json;
 
 class UbuntuCloudInterface {
   public:
@@ -24,7 +28,7 @@ class UbuntuCloudInterface {
 class UbuntuCloudFetcher : public UbuntuCloudInterface {
     std::string _url;
     bool        _initialized;
-    void*       _productData;
+    json        _productData;
 
   public:
     // Changing the url (only if input with --url?)
