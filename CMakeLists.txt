@@ -17,6 +17,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 set(SOURCES
     src/UbuntuCloudFetcher.cpp
+    src/handlers.cpp
     src/main.cpp
 )
 
@@ -24,6 +25,7 @@ set(HEADERS
     src/UbuntuCloudFetcher.hpp
     src/UbuntuCloudInterface.hpp
     src/UbuntuCloudFactory.hpp
+    src/handlers.hpp
 )
 
 # Add executable
