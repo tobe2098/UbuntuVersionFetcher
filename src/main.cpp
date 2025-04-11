@@ -33,6 +33,14 @@ int main(int argc, char* argv[]) {
     }
   } else if (option == "--lts-version") {
     return_code = printCurrentLTSRelease(std::move(fetcher));
+  } else if (option == "--sha256") {
+    if (argc < 3) {
+      std::cerr << "This option requires an additional argument";
+      return_code = 1;
+    } else {
+      std::string releaseArg(argv[2]);
+      return_code = printReleaseSHA256(std::move(fetcher), releaseArg);
+    }
   } else if (option == "--help") {
     printHelp();
   } else {

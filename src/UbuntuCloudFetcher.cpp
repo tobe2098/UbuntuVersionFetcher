@@ -83,6 +83,7 @@ std::optional<UbuntuRelease> UbuntuCloudFetcher::getCurrentLTS() const {
       current_LTS->architectures.push_back(product_json.at("arch").template get<std::string>());
       std::string latest_version;
       for (const auto& [version, version_contents] : product_json.at("versions").items()) {
+        // Avoid assumption that entries are sorted
         if (latest_version.empty() || isMoreRecentVersion(latest_version, version) == -1) {
           latest_version = version;
         }
@@ -93,10 +94,37 @@ std::optional<UbuntuRelease> UbuntuCloudFetcher::getCurrentLTS() const {
   return current_LTS;
 }
 
-std::optional<std::string> UbuntuCloudFetcher::getSha256ForRelease(const std::string& release) const {
-  // ID by title and by relasename
+std::optional<std::string> UbuntuCloudFetcher::getSha256ForRelease(const std::string& release_name) const {
+  // ID by title and by release_title or release
   //  amd64 only in terms of releases, get the latest version in versions.
-  return std::optional<std::string>();
+  std::optional<std::string> stringSha256;
+  // We do not know if the version is in the data, so optional is empty
+
+  auto is_release_lambda = [release_name](const json& product_json) -> bool {
+    return (product_json.find("arch") != product_json.end() &&
+            product_json.at("arch").template get<std::string>().find("amd64") != std::string::npos) &&
+           ((product_json.find("release") != product_json.end() &&
+             product_json.at("release").template get<std::string>().find(release_name) != std::string::npos) ||
+            (product_json.find("release_title") != product_json.end() &&
+             product_json.at("release_title").template get<std::string>().find(release_name) != std::string::npos));
+    // The check against both the title and release in case user gives either, amd64 only
+  };
+
+  for (const auto& [product_name, product_json] : this->_productData.items()) {
+    // Iterate over each product entry
+    if (is_release_lambda(product_json)) {
+      std::string latest_version;
+      for (const auto& [version, version_contents] : product_json.at("versions").items()) {
+        // Avoid assumption that entries are sorted
+        if (latest_version.empty() || isMoreRecentVersion(latest_version, version) == -1) {
+          latest_version = version;
+          stringSha256   = version_contents.at("items").at("disk1.img").at("sha256").template get<std::string>();
+        }
+      }
+      return stringSha256;
+    }
+  }
+  return std::nullopt;
 }
 
 bool UbuntuCloudFetcher::fetchData() {

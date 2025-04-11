@@ -62,6 +62,17 @@ int printCurrentLTSRelease(std::unique_ptr<UbuntuCloudInterface> fetcher) {
   return 0;
 }
 
+int printReleaseSHA256(std::unique_ptr<UbuntuCloudInterface> fetcher, const std::string& version) {
+  std::optional<std::string> releaseSha256 { fetcher->getSha256ForRelease(version) };
+  if (!releaseSha256) {
+    std::cerr << "The release was not found";
+    return 1;
+  }
+  std::cout << '\n' << *releaseSha256 << '\n';
+
+  return 0;
+}
+
 void printHelp() {
   std::cout << "Usage: ubuntu-version-fetcher [OPTION]\n"
             << "Options:\n"
