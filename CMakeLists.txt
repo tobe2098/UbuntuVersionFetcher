@@ -1,9 +1,18 @@
 cmake_minimum_required(VERSION 3.14)
 project(UbuntuCloudInfo VERSION 1.0.0 LANGUAGES CXX)
 
-#Find packages
-find_package(CURL REQUIRED)
-find_package(nlohmann_json 3.2.0 REQUIRED)
+#Fetch the dependencies
+include(FetchContent)
+FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz DOWNLOAD_EXTRACT_TIMESTAMP true)
+FetchContent_MakeAvailable(json)
+
+FetchContent_Declare(curl
+	URL https://curl.se/download/curl-8.5.0.tar.gz
+	DOWNLOAD_EXTRACT_TIMESTAMP true
+)
+FetchContent_MakeAvailable(curl)
+find_package(curl CONFIG REQUIRED)
+
 
 #Set C++ standard
 set(CMAKE_CXX_STANDARD 17)

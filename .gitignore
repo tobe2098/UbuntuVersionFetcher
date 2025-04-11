@@ -36,3 +36,5 @@
 .ninja_log
 CMakeCache.txt
 /CMakeFiles
+/_deps
+cmake_install.cmake
