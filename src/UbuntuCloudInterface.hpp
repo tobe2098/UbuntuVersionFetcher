@@ -11,8 +11,10 @@ using json = nlohmann::json;
 struct UbuntuRelease {
     std::string              release_name;
     std::vector<std::string> architectures;
-    UbuntuRelease();
-    UbuntuRelease(const std::pair<std::string, std::vector<std::string>>& data);
+    std::vector<std::string> latest_versions;
+    UbuntuRelease(): release_name(), architectures(), latest_versions() { };
+    UbuntuRelease(const std::pair<std::string, std::vector<std::string>>& data):
+        release_name(data.first), architectures(data.second), latest_versions() { };
     bool operator>(const UbuntuRelease& other) { return release_name > other.release_name; }
 };
 

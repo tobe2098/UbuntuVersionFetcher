@@ -1,5 +1,43 @@
 #include "UbuntuCloudFetcher.hpp"
 
+// static std::vector<int> partitionVersionString(const std::string& version) {
+//   //With this method we avoid creating a string copy
+//   std::vector<int> parts;
+
+//   int num {}, version_size { static_cast<int>(version.size()) };
+//   for (int idx = 0; idx < version_size; idx++) {
+//     if (version.at(idx) == '.') {
+//       parts.push_back(num);
+//       num = 0;
+//     } else {
+//       num *= 10;
+//       num += version.at(idx) - '0';
+//     }
+//   }
+//   return parts;
+// }
+
+static int isMoreRecentVersion(const std::string& old_version, const std::string& contender_version) {
+  // std::vector<int> old_parts { partitionVersionString(old_version) };
+  // std::vector<int> new_parts { partitionVersionString(contender_version) };
+  // This method avoids using extra memory
+  size_t min_len { std::min(old_version.size(), contender_version.size()) };
+  for (size_t idx = 0; idx < min_len; idx++) {
+    if (old_version.at(idx) == contender_version.at(idx)) {
+      continue;  // equal
+    } else if (old_version.at(idx) == '.') {
+      return -1;  // old version is smaller
+    } else if (contender_version.at(idx) == '.') {
+      return 1;  // old version is bigger
+    } else if (old_version.at(idx) > contender_version.at(idx)) {
+      return 1;  // old version is bigger
+    } else {
+      return -1;  // old version is smaller
+    }
+  }
+  return 0;  // equal
+}
+
 UbuntuCloudFetcher::UbuntuCloudFetcher(const std::string& url): _url(url), _initialized(false) {
   fetchData();
 }
@@ -7,8 +45,9 @@ UbuntuCloudFetcher::UbuntuCloudFetcher(const std::string& url): _url(url), _init
 UbuntuCloudFetcher::~UbuntuCloudFetcher() { }
 
 std::vector<UbuntuRelease> UbuntuCloudFetcher::getSupportedReleases() const {
-  std::map<std::string, std::vector<std::string>, std::greater<>> unique_versions;
+  std::map<std::string, std::vector<std::string>, std::greater<>> unique_releases;
   // Assume only unique version names are wanted in said list
+  // The sorting will allow to separate the LTS from the non-LTS versions, for later handling
 
   for (const auto& [product_name, product_json] : this->_productData.items()) {
     // Iterate over each product entry
@@ -16,13 +55,12 @@ std::vector<UbuntuRelease> UbuntuCloudFetcher::getSupportedReleases() const {
       // If the version is supported, we include its name in the set
       std::string complete_name =
         product_json.at("release_title").template get<std::string>() + " (" + product_json.at("release").template get<std::string>() + ")";
-      unique_versions[complete_name].push_back(product_json.at("arch").template get<std::string>());
+      unique_releases[complete_name].push_back(product_json.at("arch").template get<std::string>());
     }
-    // unique_versions.insert(product_json["release_title"]);
   }
   // Maybe sort versions?
   //  Check the "supported" boolean in the json
-  return std::vector<UbuntuRelease>(unique_versions.begin(), unique_versions.end());
+  return std::vector<UbuntuRelease>(unique_releases.begin(), unique_releases.end());
 }
 
 std::optional<UbuntuRelease> UbuntuCloudFetcher::getCurrentLTS() const {
@@ -34,14 +72,22 @@ std::optional<UbuntuRelease> UbuntuCloudFetcher::getCurrentLTS() const {
     // Iterate over each product entry
     if (product_json.find("aliases") != product_json.end() &&
         product_json.at("aliases").template get<std::string>().find("lts") != std::string::npos) {
-      // If the version is supported, we include its name in the set
+      // The lts flag in aliases is the latest/current LTS release
       if (!current_LTS) {
         // If optional is not initalized, initialize
-        current_LTS = UbuntuRelease({ product_json.at("release_title").template get<std::string>() + " (" +
-                                        product_json.at("release").template get<std::string>() + ")",
-                                      {} });
+        current_LTS = UbuntuRelease(
+          { product_json.at("version").template get<std::string>() + " (" + product_json.at("release").template get<std::string>() + ")",
+            {} });
+        // Version instead of release_title because we do not need the LTS label
       }
       current_LTS->architectures.push_back(product_json.at("arch").template get<std::string>());
+      std::string latest_version;
+      for (const auto& [version, version_contents] : product_json.at("versions").items()) {
+        if (latest_version.empty() || isMoreRecentVersion(latest_version, version) == -1) {
+          latest_version = version;
+        }
+      }
+      current_LTS->latest_versions.push_back(latest_version);
     }
   }
   return current_LTS;
@@ -109,8 +155,3 @@ size_t UbuntuCloudFetcher::writeData(void* buffer_ptr, size_t size, size_t nmemb
   string_ptr->append((char*)buffer_ptr, size * nmemb);
   return size * nmemb;
 }
-
-UbuntuRelease::UbuntuRelease(): release_name(), architectures() { }
-
-UbuntuRelease::UbuntuRelease(const std::pair<std::string, std::vector<std::string>>& data):
-    release_name(data.first), architectures(data.second) { }
