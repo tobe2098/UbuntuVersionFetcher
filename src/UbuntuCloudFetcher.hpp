@@ -30,10 +30,10 @@ class UbuntuCloudFetcher : public UbuntuCloudInterface {
 
     bool isInitialized() const override { return _initialized; }
     // Return the list of all currently *supported* Ubuntu releases
-    std::vector<std::pair<std::string, std::vector<std::string>>> getSupportedReleases() const override;
+    std::vector<UbuntuRelease> getSupportedReleases() const override;
 
     // Return the current Ubuntu LTS version
-    std::string getCurrentLTS() const override;
+    std::optional<UbuntuRelease> getCurrentLTS() const override;
 
     // Return the sha256 of the disk1.img of a given Ubuntu release (string match)
     std::optional<std::string> getSha256ForRelease(const std::string& release) const override;
