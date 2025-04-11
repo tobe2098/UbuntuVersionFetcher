@@ -68,7 +68,9 @@ int printReleaseSHA256(std::unique_ptr<UbuntuCloudInterface> fetcher, const std:
     std::cerr << "The release was not found";
     return 1;
   }
-  std::cout << '\n' << *releaseSha256 << '\n';
+  std::cout << '\n'
+            << indentation(0) << "The SHA256 of disk1.img in the most recent version of Ubuntu " << version << " is:\n"
+            << indentation(1) << "> " << *releaseSha256 << '\n';
 
   return 0;
 }

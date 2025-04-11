@@ -101,12 +101,11 @@ std::optional<std::string> UbuntuCloudFetcher::getSha256ForRelease(const std::st
   // We do not know if the version is in the data, so optional is empty
 
   auto is_release_lambda = [release_name](const json& product_json) -> bool {
-    return (product_json.find("arch") != product_json.end() &&
-            product_json.at("arch").template get<std::string>().find("amd64") != std::string::npos) &&
+    return (product_json.find("arch") != product_json.end() && product_json.at("arch").template get<std::string>().compare("amd64") == 0) &&
            ((product_json.find("release") != product_json.end() &&
-             product_json.at("release").template get<std::string>().find(release_name) != std::string::npos) ||
+             product_json.at("release").template get<std::string>().compare(release_name) == 0) ||
             (product_json.find("release_title") != product_json.end() &&
-             product_json.at("release_title").template get<std::string>().find(release_name) != std::string::npos));
+             product_json.at("release_title").template get<std::string>().compare(release_name) == 0));
     // The check against both the title and release in case user gives either, amd64 only
   };
 
