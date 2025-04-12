@@ -9,14 +9,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 #Fetch the dependencies
 include(FetchContent)
-FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz DOWNLOAD_EXTRACT_TIMESTAMP true)
+FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz DOWNLOAD_EXTRACT_TIMESTAMP true DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/downloads)
 FetchContent_MakeAvailable(json)
 
-# FetchContent_Declare(curl
-# 	URL https://curl.se/download/curl-8.5.0.tar.gz
-# 	DOWNLOAD_EXTRACT_TIMESTAMP true
-# )
-# FetchContent_MakeAvailable(curl)
 find_package(curl CONFIG REQUIRED)
 
 
