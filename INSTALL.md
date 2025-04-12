@@ -1,4 +1,8 @@
 # Build instructions for Windows
+
+## Prerequisites
+### For libcurl
+This package uses `libcurl`, a dynamic library from `curl`. This library is installed via `cmake`, but itself needs certain libraries to be present. If you have installed `Git`, it is possible that these dependencies are already in place. For more, go to [curl dependencies](https://curl.se/docs/libs.html).  
 ## Installing requirements via installers
 ### C++ compiler
 You will need to have installed a C++ compiler. 
