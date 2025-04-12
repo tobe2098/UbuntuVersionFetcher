@@ -12,15 +12,14 @@ include(FetchContent)
 FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz DOWNLOAD_EXTRACT_TIMESTAMP true)
 FetchContent_MakeAvailable(json)
 
-FetchContent_Declare(curl
-	URL https://curl.se/download/curl-8.5.0.tar.gz
-	DOWNLOAD_EXTRACT_TIMESTAMP true
-)
-FetchContent_MakeAvailable(curl)
-# find_package(curl CONFIG REQUIRED)
+# FetchContent_Declare(curl
+# 	URL https://curl.se/download/curl-8.5.0.tar.gz
+# 	DOWNLOAD_EXTRACT_TIMESTAMP true
+# )
+# FetchContent_MakeAvailable(curl)
+find_package(curl CONFIG REQUIRED)
 
 
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build static libraries" FORCE)
 
 #Set output directories
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -52,7 +51,11 @@ target_link_libraries(ubuntu-version-fetcher PRIVATE
     CURL::libcurl
     nlohmann_json::nlohmann_json
 )
-
+# add_custom_command(TARGET ubuntu-version-fetcher POST_BUILD
+#     COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#         "$<TARGET_FILE:libcurl>"            # This resolves to libcurl.dll or libcurl-d.dll
+#         "$<TARGET_FILE_DIR:ubuntu-version-fetcher>"       # This resolves to the folder where MyApp.exe is
+# )
 # Compile options
 target_compile_options(ubuntu-version-fetcher PRIVATE
     $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wpedantic>
@@ -66,11 +69,11 @@ install(TARGETS ubuntu-version-fetcher
     ARCHIVE DESTINATION lib
 )
 # Testing (optional)
-option(BUILD_TESTING "Build tests" OFF)
-if(BUILD_TESTING)
-    enable_testing()
-    add_subdirectory(tests)
-endif()
+# option(BUILD_TESTING "Build tests" OFF)
+# if(BUILD_TESTING)
+#     enable_testing()
+#     add_subdirectory(tests)
+# endif()
 
 # Generate compile_commands.json for tools like clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
