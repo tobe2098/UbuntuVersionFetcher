@@ -14,13 +14,10 @@ You will need to have installed a C++ compiler.
 4. Complete the installation.
 5. Verify the installation by running `cl` on the "Developer Command Prompt for VS".
 
-#### Clang
+**Warning**: If you use the MSVC compiler, you have to use the "Developer Command Prompt for VS" instead of the `cmd.exe` for the [build process](./INSTALL.md#build-the-binary).
 
-1. Download the latest [LLVM installer](https://releases.llvm.org/) for Windows.
-2. Run the installer and add choose LLVM to the system PATH.
-3. Run `clang++ --version` to verify.
-
-Ninja and CMake are required to install this package. All other dependencies are installed via cmake automatically.
+#### GCC
+Go [here](./INSTALL.md#installing-requirements-via-msys2)
 
 ### Build system
 #### Ninja
@@ -59,13 +56,19 @@ pacman -S mingw-w64-x86_64-make
 4. Run `cmake --version` to verify the installation. If there are any issues, it is recommended to run the command with the other installed commands. 
 
 ## Building this package from tarball
+Unpack the tarball with 
+```
+tar -xf tarball.tar.xz
+```
 ## Building this package from github
 
+## Build the binary
 Simply run 
 ```
 cmake .
 ```
-and then 
+
+Afterwards, 
 ```
 ninja
 ```
@@ -75,4 +78,5 @@ make
 ```
 in the main directory (this folder).
 
-Then run the executable from `./bin/`
+## Run the binary
+The binary is in hte `./bin/` folder. Use the `--help` option for more information on how to use it.

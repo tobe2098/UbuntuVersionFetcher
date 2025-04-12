@@ -11,7 +11,7 @@ FetchContent_Declare(curl
 	DOWNLOAD_EXTRACT_TIMESTAMP true
 )
 FetchContent_MakeAvailable(curl)
-find_package(curl CONFIG REQUIRED)
+# find_package(curl CONFIG REQUIRED)
 
 
 #Set C++ standard

@@ -78,9 +78,9 @@ int printReleaseSHA256(std::unique_ptr<UbuntuCloudInterface> fetcher, const std:
 void printHelp() {
   std::cout << "Usage: ubuntu-version-fetcher [OPTION]\n"
             << "Options:\n"
-            << "  --supported-releases     List all supported Ubuntu releases\n"
-            << "  --current-lts            Show the current Ubuntu LTS version\n"
-            << "  --sha256 RELEASE         Get the SHA256 hash of disk1.img for the specified release\n"
+            << "  --supported-releases                   List all supported Ubuntu releases\n"
+            << "  --lts-version                          Show the current Ubuntu LTS version for each architecture\n"
+            << "  --sha256 RELEASE_TITLE/RELEASE         Get the SHA256 hash of disk1.img for the last version of the specified release\n"
             // << "  --url URL           Use custom Simplestreams URL\n"
-            << "  --help                   Display this help and exit\n";
+            << "  --help                                 Display this help and exit\n";
 }
