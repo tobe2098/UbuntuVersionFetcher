@@ -70,7 +70,7 @@ int printReleaseSHA256(std::unique_ptr<UbuntuCloudInterface> fetcher, const std:
   }
   std::cout << '\n'
             << indentation(0) << "The SHA256 of disk1.img in the most recent version of Ubuntu " << version << " is:\n"
-            << indentation(1) << ">" << indentation(0) << *releaseSha256 << '\n';
+            << indentation(0) << ">" << indentation(1) << *releaseSha256 << '\n';
 
   return 0;
 }
