@@ -12,9 +12,16 @@ include(FetchContent)
 FetchContent_Declare(json DOWNLOAD_EXTRACT_TIMESTAMP true URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz)
 FetchContent_MakeAvailable(json)
 
-
+# set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries" FORCE)
+# set(CURL_STATICLIB ON CACHE BOOL "Build libcurl as a static library" FORCE)
+# Disable any features you don't need to reduce dependencies
+# set(BUILD_TESTING OFF CACHE BOOL "Build tests" FORCE)
 find_package(CURL REQUIRED)
-
+# FetchContent_Declare(CURL
+# 	DOWNLOAD_EXTRACT_TIMESTAMP true
+#     URL https://curl.se/download/curl-8.5.0.tar.gz
+# )
+# FetchContent_MakeAvailable(CURL)
 
 #Set output directories
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
