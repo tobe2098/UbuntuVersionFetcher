@@ -1,9 +1,9 @@
 #pragma once
-
-#include "UbuntuCloudInterface.hpp"
+#define NOMINMAX
 
 #include <curl/curl.h>
 #include <nlohmann/json.hpp>
+#include "UbuntuCloudInterface.hpp"
 
 #include <iostream>
 #include <optional>
