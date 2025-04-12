@@ -52,3 +52,6 @@ in the main directory (this folder).
 
 ## Run the binary
 The binary is in hte `./bin/` folder. Use the `--help` option for more information on how to use it.
+
+
+sudo apt install libcurl4-openssl-dev 
