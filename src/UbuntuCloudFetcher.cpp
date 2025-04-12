@@ -39,7 +39,7 @@ static int isMoreRecentVersion(const std::string& old_version, const std::string
 }
 
 UbuntuCloudFetcher::UbuntuCloudFetcher(const std::string& url): _url(url), _initialized(false) {
-  fetchData();
+  _initialized = fetchData();
 }
 
 UbuntuCloudFetcher::~UbuntuCloudFetcher() { }
@@ -168,7 +168,6 @@ bool UbuntuCloudFetcher::curlRequest(CURL* curl_handle, std::string& curl_respon
       return false;  // Early return
     }
     this->_productData = data.at("products");
-    this->_initialized = true;
   } catch (const json::parse_error& exception) {
     std::cerr << "JSON parsing error" << exception.what() << std::endl;
     // Force flush to ensure output is clear

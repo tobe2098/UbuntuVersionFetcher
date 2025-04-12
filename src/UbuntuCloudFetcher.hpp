@@ -39,7 +39,7 @@ class UbuntuCloudFetcher : public UbuntuCloudInterface {
     std::optional<std::string> getSha256ForRelease(const std::string& release) const override;
 
     // Fetch data
-    bool fetchData();
+    [[nodiscard]] bool fetchData();
     // Process data
     // void processData(); //Not necessary because we only do one request per process
 
