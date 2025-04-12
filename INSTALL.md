@@ -63,11 +63,14 @@ tar -xf tarball.tar.xz
 ## Building this package from github
 
 ## Build the binary
-Simply run 
+Simply run (if using `make`) 
 ```
 cmake .
 ```
-
+or if using `ninja`:
+```
+cmake . -G Ninja
+```
 Afterwards, 
 ```
 ninja
