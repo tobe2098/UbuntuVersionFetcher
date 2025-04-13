@@ -62,7 +62,7 @@ git clone https://github.com/tobe2098/UbuntuVersionFetcher
 
 Unpack the tarball with 
 ```
-tar -xf tarball.tar.xz
+tar -xf UbuntuVersionFetcher.tar.gz
 ```
 
 
