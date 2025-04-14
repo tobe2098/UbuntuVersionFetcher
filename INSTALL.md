@@ -1,6 +1,7 @@
 # Installing requirements for Windows
 
 Installation via MSYS2 has been chosen to avoid problems when dealing with the installation and posterior runtime linking of `libcurl.dll`. The installation has been tested in a Windows 10 22H2 `.iso`.
+
 1. Install [MSYS2](https://www.msys2.org/). You will perform the rest of the build from the `mingw64` terminal, or from the `cmd` if you put `msys64/mingw64/` in your PATH variable, as well as `msys64/usr/bin/`.
 2. Install `cmake`, `gcc` or `clang` and `make` or `ninja` (comes pre-installed). Updating first is recommended.
 ```
@@ -8,10 +9,15 @@ pacman -Syu
 pacman -S mingw-w64-x86_64-cmake
 pacman -S mingw-w64-x86_64-gcc
 pacman -S mingw-w64-x86_64-clang
-cdpacman -S mingw-w64-x86_64-make
+pacman -S mingw-w64-x86_64-make
 ```
 3. Add `C:\msys64\mingw64\bin` (or your MSYS2 installation path) to the PATH variable (optional, only if you want to have access to the toolkit outside the `msys64` environment).
 4. Run `cmake --version` to verify the installation. If there are any issues, it is recommended to run the command with the other installed commands. 
+
+If you find problems during the building process related to `curl` or `openssl` libraries:
+```
+pacman -S libcurl-devel
+```
 
 ## Building this package from tarball
 
